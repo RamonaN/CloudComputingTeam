@@ -28,12 +28,7 @@
     <div class="g-signin2  d-flex justify-content-center" data-onsuccess="onSignIn"></div>
       <a href="#" onclick="signOut();">Sign out</a>
       <script>
-        function signOut() {
-          var auth2 = gapi.auth2.getAuthInstance();
-          auth2.signOut().then(function () {
-            console.log('User signed out.');
-          });
-        }
+      
       </script>
     </div>
   </div>
@@ -47,8 +42,16 @@
       console.log('Email: ' + profile.getEmail());
 
       
-      window.location.href="/books.html" ;// This is null if the 'email' scope is not present.
+      window.location.href="/books" ;// This is null if the 'email' scope is not present.
     }
+    document.addEventListener("DOMContentLoaded",function(){
+    
+          var auth2 = gapi.auth2.getAuthInstance();
+          auth2.signOut().then(function () {
+            console.log('User signed out.');
+          });
+        
+    })
   </script>
   <script src="https://apis.google.com/js/platform.js" async defer></script>
 </body>
