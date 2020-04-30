@@ -32,6 +32,7 @@ router.get('/:bookId/ratings', (req, res, next) => {
     {
       return next(err);
     }
+    
     res.json(ratings).end();
   })
 });
