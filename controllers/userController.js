@@ -1,17 +1,36 @@
-const users = require("../database/user.js");
 const createError = require('http-errors');
+const { Request } = require("tedious");
+const { modelUser } = require("../models/users")
+const connection = require("../database/connection");
 
 module.exports.getUser = (userId, next) => {
-  console.log(userId);
-  users.doc(userId).get()
-  .then(user => {
-    if (!user.exists) {
-      next(createError(404, "User does not exist"));
-    } else {
-      next(undefined, user.data());
+
+  const request = new Request(
+    `SELECT *
+     FROM [dbo].[Utilizator] 
+     WHERE id = '${userId}'`,
+    (err, rowCount) => {
+      if (err) {
+        next(createError(500, err.message));
+      } else {
+        console.log(`${rowCount} row(s) returned`);
+      }
     }
-  })
-  .catch(err => {
-    next(createError(500, err));
+  );
+
+  var users = []
+  request.on("row", columns => {
+    var user = modelUser(columns);
+    users.push(user)
   });
+
+  request.on("err", err => {
+    next(createError(500, err.message));
+  });
+
+  request.on('doneProc', (rowCount, more, rows) => { 
+    next(undefined, users);
+  });
+
+  connection.execSql(request);
 }

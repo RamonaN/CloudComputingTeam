@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mustacheExpress = require('mustache-express');
 
-var indexRouter = require('./routes/index');
 var booksRouter = require('./routes/books');
 var usersRouter = require('./routes/users');
 
@@ -22,7 +21,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
 app.use('/books', booksRouter);
 app.use('/users', usersRouter);
 
