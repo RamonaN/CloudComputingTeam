@@ -1,0 +1,373 @@
+<!-- Copyright (c) Microsoft Corporation.
+     Licensed under the MIT License. -->
+
+<!-- <IndexSnippet> -->
+  <style>
+@font-face {
+    font-family: 'Sketch Block';
+    src: url('http://tangledindesign.com/codepen/fonts/sketch_block-webfont.eot');
+    src: url('http://tangledindesign.com/codepen/fonts/sketch_block-webfont.eot?#iefix') format('embedded-opentype'),
+         url('http://tangledindesign.com/codepen/fonts/sketch_block-webfont.woff') format('woff'),
+         url('http://tangledindesign.com/codepen/fonts/sketch_block-webfont.ttf') format('truetype'),
+         url('http://tangledindesign.com/codepen/fonts/sketch_block-webfont.svg#SketchBlockBold') format('svg');
+}
+
+@font-face {
+    font-family: 'Museo 700';
+    src: url('http://tangledindesign.com/codepen/fonts/Museo700-Regular-webfont.eot');
+    src: url('http://tangledindesign.com/codepen/fonts/Museo700-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('http://tangledindesign.com/codepen/fonts/Museo700-Regular-webfont.woff') format('woff'),
+         url('http://tangledindesign.com/codepen/fonts/Museo700-Regular-webfont.ttf') format('truetype'),
+         url('http://tangledindesign.com/codepen/fonts/Museo700-Regular-webfont.svg#SketchBlockBold') format('svg');
+}
+
+@font-face {
+    font-family: 'CallunaRegular';
+    src: url('http://tangledindesign.com/codepen/fonts/Calluna-Regular-webfont.eot');
+    src: url('http://tangledindesign.com/codepen/fonts/Calluna-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('http://tangledindesign.com/codepen/fonts/Calluna-Regular-webfont.woff') format('woff'),
+         url('http://tangledindesign.com/codepen/fonts/Calluna-Regular-webfont.ttf') format('truetype'),
+         url('http://tangledindesign.com/codepen/fonts/Calluna-Regular-webfont.svg#CallunaRegular') format('svg');
+}
+
+
+	.containerdef {
+		width: 590px;
+		margin: 140px auto;
+		position: relative;
+	}
+
+	blockquote {
+		width: 565px;
+		font: 2.65em CallunaRegular;
+		letter-spacing: .075em;
+		float: left;
+		padding: 45px 0 30px 25px;
+		margin: 0;
+		border-top: 2px dotted #858585;
+		border-bottom: 2px dotted #858585;
+		-webkit-transform: rotate(-3deg);
+		-moz-transform: rotate(-3deg);
+	}
+
+	.containerdef:before {
+		content: "“";
+		font-size: 13em;
+		position: absolute;
+		left: -100px;
+		color: #666;
+	}
+
+	.containerdef:after {
+		content: "”";
+		font-size: 13em;
+		position: absolute;
+		right: -100px;
+		top: 150px;
+		color: #666;
+	}
+
+		blockquote:first-line {
+			font: 1.85em "Sketch Block";
+			color: #fff79e;
+		}
+
+		blockquote:first-letter {
+			font-size: 2.9em;
+			text-transform: lowercase;
+			float: left;
+			line-height: .52em;
+			margin-right: -18px;
+			position: relative;
+			z-index: 1;
+		}
+
+		blockquote strong:first-child {
+			margin-left: 8px;
+			letter-spacing: 0;
+		}
+
+		blockquote strong:last-child {
+			font: 2em "Museo 700";
+			text-transform: uppercase;
+			letter-spacing: 0;
+		}
+
+		blockquote em {
+			border-bottom: 2px dotted #858585;
+		}
+
+		blockquote + b {
+			float: right;
+			margin-top: 10px;
+			font: 1.6em CallunaRegular;
+			letter-spacing: .15em;
+		}
+
+		blockquote + b:first-letter {
+			color: #fff79e;
+			font-size: 1.3em;
+			font-style: italic;
+			letter-spacing: .25em;
+		}
+
+		@-moz-document url-prefix() { 
+
+			blockquote:first-letter {
+				margin-top: -29px;
+			}
+
+		}
+body {
+	background: #333;
+	color: #fff;
+}
+/*Login starts here*/
+
+@keyframes scale_header {
+  0%   {max-height: 0px; margin-bottom: 0px; opacity: 0;}
+  100% {max-height: 117px; margin-bottom: 25px; opacity: 1;}
+}
+
+@keyframes input_opacity {
+  0%   {transform: translateY(-10px); opacity: 0}
+  100% {transform: translateY(0px); opacity: 1}
+}
+
+@keyframes text_opacity {
+  0% {color: transparent;}
+}
+
+@keyframes error_before {
+  0%   {height: 5px; background: rgba(0, 0, 0, 0.156); color: transparent;}
+  10%  {height: 117px; background: #FFFFFF; color: #C62828}
+  90%  {height: 117px; background: #FFFFFF; color: #C62828}
+  100% {height: 5px; background: rgba(0, 0, 0, 0.156); color: transparent;}
+}
+
+
+/* Login Form */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 340px;
+  height: auto;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.login-container img {
+  width: 200px;
+  margin: 0 0 20px 0;
+}
+
+.login-container p {
+  align-self: flex-start;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.8rem;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.login-container p a {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.login {
+  position: relative;
+  width: 100%;
+  padding: 10px;
+  margin: 0 0 10px 0;
+  box-sizing: border-box;
+ 
+  background: #FAFAFA;
+  overflow: hidden;
+  animation: input_opacity 0.2s cubic-bezier(.55, 0, .1, 1);
+ 
+}
+
+
+
+/* Form */
+.login-form {
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+
+/* Inputs */
+.login-input {
+  position: relative;
+  width: 100%;
+  padding: 10px 5px;
+  margin: 0 0 25px 0;
+  border: none;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  background: transparent;
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  opacity: 1;
+  animation: input_opacity 0.8s cubic-bezier(.55, 0, .1, 1);
+  transition: border-bottom 0.2s cubic-bezier(.55, 0, .1, 1);
+}
+
+.login-input:focus {
+  outline: none;
+  border-bottom: 2px solid #E37F00;
+}
+
+
+/* Submit Button */
+.submit-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  position: relative;
+  padding: 10px;
+  margin: 35px -25px -25px -25px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.login-button {
+  padding: 10px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #E37F00;
+  cursor: pointer;
+  opacity: 1;
+  animation: input_opacity 0.8s cubic-bezier(.55, 0, .1, 1);
+  transition: background 0.2s ease-in-out;
+}
+
+.login-button.raised {
+  padding: 5px 10px;
+  color: #FAFAFA;
+  background: #E37F00;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.137255),
+              0px 1px 5px 0px rgba(0, 0, 0, 0.117647),
+              0px 3px 1px -2px rgba(0, 0, 0, 0.2);
+}
+
+.login-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.login-button.raised:hover {
+  background: #FDAB43;
+}
+
+
+  </style>
+  <div class="container d-flex flex-column">
+    
+    {{#if user}}
+      <h4>Welcome {{ user.displayName }}!</h4>
+      <p>Use the navigation bar at the top of the page to get started.</p>
+    {{else}}
+    <div class="container text-center mt-5">
+   <article class="containerdef">
+		<blockquote>
+			<strong>Books</strong> are a <em> uniquely portable  </em>  <strong>Magic</strong>
+    
+		</blockquote>
+	  <b>Stephen King.</b>
+
+	</article>
+    </div>
+   
+    
+     <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header  text-center" style="background-color:lightseagreen">
+        <h4 class="modal-title w-100 font-weight-bold" style="color:black;">Sign in</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+       
+      <div class="modal-body mx-3">
+        <section class="login" id="login">
+    <form class="login-form" action="#" method="post">
+      <input type="text" class="login-input" placeholder="User" required autofocus/>
+      <input type="password" class="login-input" placeholder="Password" required/>
+      <div class="submit-container">
+        <button type="submit" class="login-button">SIGN IN</button>
+        <a href="/auth/signin" class="btn login-button btn-large">Sign in with Microsoft</a>
+      </div>
+      </div>
+    </form>
+  </section>
+      </div>
+     
+  </div>
+</div>
+<div class="modal fade" id="modalRegisterForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold" style="color:black;">Sign up</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <i class="fas fa-envelope prefix grey-text"></i>
+          <input type="email" id="defaultForm-email" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="defaultForm-email">Your email</label>
+        </div>
+     <div class="md-form mb-5">
+          <i class="fas fa-birthday-cake prefix grey-text"></i>
+          <input type="email" id="defaultForm-email" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="defaultForm-email">Age</label>
+        </div>
+         <div class="md-form mb-5">
+          <i class=" fas fa-street-view prefix grey-text"></i>
+          <input type="email" id="defaultForm-email" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="defaultForm-email">Location</label>
+        </div>
+        <div class="md-form mb-4">
+          <i class="fas fa-lock prefix grey-text"></i>
+          <input type="password" id="defaultForm-pass" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
+        </div>
+        <div class="md-form mb-4">
+          <i class="fas fa-lock prefix grey-text"></i>
+          <input type="password" id="retypeForm-pass" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="retypeForm-pass">Confirm password</label>
+        </div>
+
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button class="btn btn-default">Register</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="text-center">
+  <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">
+    Sign in </a>
+      <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalRegisterForm">
+    Sign up </a>
+</div>
+     
+     
+    
+   {{/if}}
+   
+  </div>
+
+  <!-- </IndexSnippet> -->
+
+ 
