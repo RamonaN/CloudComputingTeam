@@ -1,13 +1,13 @@
 const createError = require('http-errors');
 const { Request } = require("tedious");
-const { modelRating } = require("../models/ratings")
+const { modelReview } = require("../models/review")
 const connection = require("../database/connection");
 
-module.exports.getRatingsByUser = (userId, next) => {
+module.exports.getReviewsByUser = (userId, next) => {
 
   const request = new Request(
     `SELECT *
-     FROM [dbo].[Scor] 
+     FROM [dbo].[Review] 
      WHERE utilizator = '${userId}'`,
     (err, rowCount) => {
       if (err) {
@@ -18,10 +18,10 @@ module.exports.getRatingsByUser = (userId, next) => {
     }
   );
 
-  var ratings = []
+  var reviews = [];
   request.on("row", columns => {
-    var rating = modelRating(columns);
-    ratings.push(rating)
+    var review = modelReview(columns);
+    reviews.push(review)
   });
 
   request.on("err", err => {
@@ -29,18 +29,19 @@ module.exports.getRatingsByUser = (userId, next) => {
   });
 
   request.on('requestCompleted', () => { 
-    next(undefined, ratings);
+    next(undefined, reviews);
   });
 
   connection.execSql(request);
 }
 
-module.exports.getRatingsByBook = (bookId, next) => {
+module.exports.getReviewsByBook = (bookId, next) => {
 
   const request = new Request(
-    `SELECT *
-     FROM [dbo].[Scor] 
-     WHERE isbn = '${bookId}'`,
+   `SELECT utilizator, isbn, descriere, dataPostarii, nume
+    FROM [dbo].[Review]
+    JOIN [dbo].[Utilizator] ON [dbo].[Review].utilizator = [dbo].[Utilizator].id
+    WHERE isbn = '${bookId}';`,
     (err, rowCount) => {
       if (err) {
         next(createError(500, err.message));
@@ -50,10 +51,10 @@ module.exports.getRatingsByBook = (bookId, next) => {
     }
   );
 
-  var ratings = []
+  var reviews = []
   request.on("row", columns => {
-    var rating = modelRating(columns);
-    ratings.push(rating)
+    var review = modelReview(columns);
+    reviews.push(review)
   });
 
   request.on("err", err => {
@@ -61,17 +62,20 @@ module.exports.getRatingsByBook = (bookId, next) => {
   });
 
   request.on('requestCompleted', () => { 
-    next(undefined, ratings);
+    next(undefined, reviews);
   });
 
   connection.execSql(request);
 }
 
-module.exports.rate = (bookId, userId, rate, next) => {
+module.exports.review = (bookId, userId, dataPostarii, descriere, next) => {
+
+  console.log(`INSERT INTO [dbo].[Review] (utilizator, isbn, descriere, dataPostarii)
+       VALUES (${userId}, '${bookId}', '${descriere}', '${dataPostarii}');`);
 
   const request = new Request(
-      `INSERT INTO [dbo].[Scor] (utilizator, isbn, rating)
-       VALUES (${userId}, '${bookId}', ${rate});`,
+      `INSERT INTO [dbo].[Review] (utilizator, isbn, descriere, dataPostarii)
+       VALUES (${userId}, '${bookId}', '${descriere}', '${dataPostarii}');`,
     (err, rowCount) => {
       if (err) {
         next(createError(500, err.message));

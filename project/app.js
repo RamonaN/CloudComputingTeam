@@ -1,4 +1,3 @@
-
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -9,6 +8,8 @@ var flash = require('connect-flash');
 require('dotenv').config();
 var passport = require('passport');
 var OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
+
+userController = require('./controllers/userController');
 
 // Configure passport
 
@@ -145,6 +146,13 @@ hbs.registerHelper('eventDateTime', function(dateTime){
 });
 // </FormatDateSnippet>
 
+hbs.registerHelper('times', function(n, block) {
+    var accum = '';
+    for(var i = 0; i < n; ++i)
+        accum += block.fn(i);
+    return accum;
+});
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -166,9 +174,28 @@ app.use(function(req, res, next) {
   // Set the authenticated user in the
   // template locals
   if (req.user) {
-    res.locals.user = req.user.profile;
+    const name = req.user.profile.displayName;
+    const success = () => {
+      userController.getId(name, (err, id) => {
+        if (err)
+        {
+          return next(createError(500, err.message));
+        }
+
+        req.user.profile.id = id;
+        res.locals.user = req.user.profile;
+        next();
+      })
+    }
+    userController.exists(name, success, () => {
+      userController.register(req.user.profile.displayName);
+      success();
+    })
   }
-  next();
+  else
+  {
+    next();
+  }
 });
 // </AddProfileSnippet>
 

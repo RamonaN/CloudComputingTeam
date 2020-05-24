@@ -28,7 +28,7 @@ module.exports.getBook = (bookId, next) => {
     next(createError(500, err.message));
   });
 
-  request.on('doneProc', (rowCount, more, rows) => { 
+  request.on('requestCompleted', () => { 
     next(undefined, books);
   });
 
@@ -59,7 +59,7 @@ module.exports.getBooks = (next) => {
     next(createError(500, err.message));
   });
 
-  request.on('doneProc', (rowCount, more, rows) => { 
+  request.on('requestCompleted', () => { 
     next(undefined, books);
   });
 
