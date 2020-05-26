@@ -26,31 +26,75 @@
   </style>
 </head>
 <body>
-  <div class="container mt-5 mb-5  flex-column">
+  <div class="container d-flex flex-row">
+  <div class="container mt-5 mb-5 col-lg-7 flex-column">
     <div class="row justify-content-left  flex-column">
     <h3>Hello, booklover!</h3>
     <h4>Please fill one or more fields and get a reccomendation </h4>
     </div>
     <div class="row justify-content-left ">
-        <form class="d-flex flex-column">
+        <form class="d-flex flex-column" method="post" action="reccomender">
+          <div class="form-group mb-3 ">
+    <label for="Titlu"></label>
+    <input type="text" class="form-control" id="Titlu" name="titlu" placeholder="Title">
+  </div>
   <div class="form-group mb-3">
     <label for="authorName"></label>
-    <input type="text" class="form-control" id="authorName" aria-describedby="author" placeholder="Enter author name">
+    <input type="text" class="form-control" id="authorName" name="autor" aria-describedby="author" placeholder="Enter author name">
   </div>
   <div class="form-group mb-3 ">
     <label for="anAparitie"></label>
-    <input type="text" class="form-control" id="anAparitie" placeholder="Year of  publication">
+    <input type="text" class="form-control" id="anAparitie" name="an" placeholder="Year of  publication">
   </div>
- <select class="browser-default custom-select mb-5">
-  <option selected>Category</option>
-  <option value="1">One</option>
-  <option value="2">Two</option>
-  <option value="3">Three</option>
-</select>
-  <button type="submit" class="btn btn-warning">Get reccomendation</button>
+ 
+  <div class="form-group mb-3 ">
+    <label for="Categorie"></label>
+    <input type="text" class="form-control" id="Categorie" name="categorie" placeholder="Categorie">
+  </div>
+  <div class="form-group mb-3 ">
+    <label for="Editor"></label>
+    <input type="text" class="form-control" id="Editor" name="editor" placeholder="Editor">
+  </div>
+
+  <button  type="submit" class="btn btn-warning">Get reccomendation</button>
 </form>
     </div>
 
   </div>
+  
+  <div class="container col-lg-3 d-flex flex-column" >
+    {{#each isbn}}
+    <a href="/book/{{isbn}}"><button class="btn btn-warning"> Go to book with isbn : {{isbn}}</button></a>
+    {{/each}}
+  </div>
 </body>
+<script>
+ const url="https://ussouthcentral.services.azureml.net/workspaces/ce6a4cb74bc442ac842a9fe757b34621/services/ca020d3c09674aadb0dbb90d3b4672c8/execute?api-version=2.0&details=true"
+
+ let data =  {
+        "GlobalParameters": {
+        "user_id": "3",
+        "filter": "titlu,autor,an,editor,categorie ,,2001,,"}
+}
+function getRecco(){
+const url="https://ussouthcentral.services.azureml.net/workspaces/ce6a4cb74bc442ac842a9fe757b34621/services/ca020d3c09674aadb0dbb90d3b4672c8/execute?api-version=2.0&details=true"
+fetch(url, {
+  method: 'POST', // or 'PUT'
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization':'Bearer oPzykrHDC8+ATDy+RSfGvHwaJFeCQdA+6kQfdGSEb0G9EWr0MELZ/V4BSbo12eB6TAOJvC6KhSxHb6GSo+5lpw=='
+  },
+  body: JSON.stringify(data),
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Success:', data);
+})
+.catch((error) => {
+  console.error('Error:', error);
+})
+}
+
+
+  </script>
 </html>

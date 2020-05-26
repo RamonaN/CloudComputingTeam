@@ -26,9 +26,8 @@ router.get('/', async (req, res) => {
           debug: JSON.stringify(err)
         });
       }
-  console.log("AM ajuns pana aici");
   bookController.getBooks((err, books) => {
-    console.log("am intrat in controler")
+  
     if (err) 
     {
       next(err);

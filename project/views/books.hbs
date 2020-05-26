@@ -47,11 +47,11 @@
           <img class="card-img-top mt-3" style="width:70%;margin-right:15%;margin-left:15%;height:170px" src="{{{imagine}}}" alt="Card image">
           <div class="card-body text-center">
             <h4 class="card-title">{{titlu}}</h4>
-            <p class="card-text">ISBN: {{isbn}}</p>
-            <p class="card-text">Author: {{autor}}</p>
-            <p class="card-text">Publisher: {{editor}} </p>
-            <p class="card-text">Year : {{an}} </p>
+            <p>Author: {{autor}}</p>
+            <h5 class="card-title">Price: {{pret}} lei </h5>
             <a href="http://localhost:3000/book/{{isbn}}/"><button class="btn btn-success">View more </button></a>
+               <button class="btn btn-danger add-to-cart-button" product='{{titlu}}' sel={{pret}} rel='{{isbn}}'>
+        Add to cart </button>
           </div>
         </div>
       {{/each}}

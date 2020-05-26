@@ -6,6 +6,7 @@
 <html>
   <head>
     <title>Bookaholic</title>
+
 <!-- JQuery -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <!-- Bootstrap tooltips -->
@@ -30,6 +31,17 @@
       href="https://use.fontawesome.com/releases/v5.12.1/css/all.css"
       crossorigin="anonymous">
     <link rel='stylesheet' href='/stylesheets/style.css' />
+
+  <link href="https://fonts.googleapis.com/css2?family=Spicy+Rice&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
 
   </head>
 
@@ -84,8 +96,9 @@
                 </div>
               </li>
               <li class="mini-cart"> 
-      <button class="btn mini-cart-button"><span class="fas fa-shopping-cart"></span></button>
+      <button class=" mini-cart-button"><span class="fas fa-shopping-cart"></span></button>
   
+
     <div class="mini-cart-container">
       <div class="mini-cart-items">
         <ul>
@@ -93,12 +106,13 @@
         <div class="mini-cart-totals">
           <div id="total-price">
             <p>Total Price</p>
-            <span> $50.50 </span>
+            <span></span>
           </div>
-          <div id="total-items">
-            <p>Total Items</p>
-            <span> 10 </span>
+          <div>
+            <a href="/checkout" class="nav-link"><button class="btn btn-dark">Checkout</button></a>
+
           </div>
+         
         </div>
       </div>
     </div></li>
@@ -154,7 +168,8 @@
           integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
           crossorigin="anonymous"></script>
   <script>
-    function commaSeparateNumber(val){
+  
+  function commaSeparateNumber(val){
   while (/(\d+)(\d{3})/.test(val.toString())){
     val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
   }
@@ -165,51 +180,48 @@ $('document').ready(function(){
      $('.mini-cart-container').toggleClass('mini-cart-open');
    })
    
-   $('.plus').on('click', function(e) {
-    var val = parseInt($(this).prev('input').val());
-    $(this).prev('input').val(val + 1).change();
-  });
-
-  $('.minus').on('click', function(e) {
-    var val = parseInt($(this).next('input').val());
-    if (val !== 0) {
-      $(this).next('input').val(val - 1).change();
-    }
-  });
   
   $('.add-to-cart-button').on('click', function(e) {
+   
     var val = $(this).attr("rel");
     var price = $(this).attr('sel');
-    var qty = $("input#text_"+val).val();
+    //var qty = $("input#text_"+val).val();
     var productName =$(this).attr('product');
+    
+    localStorage.setItem("val",val);
+    localStorage.setItem("productName",productName);
+    localStorage.setItem('price',price);
+    }
+   
+   
     if($(".mini-cart-items ul li#"+val).length)
     {
-      var new_val=parseFloat($("span#price_"+val).text())+(parseFloat(qty)*parseFloat(price));
+      var new_val=parseFloat($("span#price_"+val).text())+parseFloat(price);
       $("span#price_"+val).text(new_val.toFixed(2));
       
-      var new_qty_val=parseInt($("span#qty_"+val).text())+parseInt(qty);
-      $("span#qty_"+val).text(new_qty_val);
+      //var new_qty_val=parseInt($("span#qty_"+val).text())+parseInt(qty);
+      //$("span#qty_"+val).text(new_qty_val);
     }else{ 
-        $('.mini-cart-items ul').append('<li id="'+val+'">'+'<h3>'+productName+'<br/>'+'<span class="item-prices" id="price_'+val+'">'+price+'<span>'+'</h3>'+'<span class="item-quantities" id="qty_'+val+'">'+qty+'</span>'+'</li>');
+    
+
+      
+        $('.mini-cart-items ul').append('<li id="'+val+'">'+'<h3>'+productName+'<br/>'+'<span class="item-prices" id="price_'+val+'">'+price+'</span>'+'</h3>'+'</li>');
     };
 
     var totalPrice = 0.0;
     $(".item-prices").each(function()
     {
         totalPrice += parseFloat($(this).text());
+       // localStorage.setItem('totalPrice',totalPrice);
     });
     $('div#total-price > span').text(commaSeparateNumber(totalPrice.toFixed(2)));
-    
-    var totalQty = 0;
-    $(".item-quantities").each(function(){
-        totalQty += parseFloat($(this).text());
-    });
-    $('div#total-items > span').text(totalQty.toFixed(0));
+   
     
     $('.succes-message').show(0).delay(1000).hide(0);
   });
 
 });
+
   </script>
   </body>
 </html>

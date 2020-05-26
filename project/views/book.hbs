@@ -221,8 +221,8 @@
         <p class="card-text"><strong>Publisher:</strong>{{editor}} </p>
         <h4 class="card-title"><strong>Price: {{pret}} lei</strong></h4>
          <p class="card-text"><strong>Description:</strong>{{descriere}} </p>
-        <a href="" class="btn btn-danger " data-toggle="modal" data-target="#modalShoppingCart">
-        Add to cart </a>
+        <button class="btn btn-danger add-to-cart-button" product='{{titlu}}' sel={{pret}} rel={{titlu}}>
+        Add to cart </button>
       </div>
     </div>
    
@@ -278,14 +278,15 @@
                                     Fashion</span>
                                 </div>
                               </div>
-                            
+                            <td class="align-middle"><strong>$79.00</strong></td>
+                            <td class="align-middle"><strong>3</strong></td>
+                            <td class="align-middle"><a href="#" class="text-dark"><i class="fa fa-trash"></i></a>
                             </td>
                           </tr>
 
                         </tbody>
                       </table>
                       <a href="/checkout" class="nav-link"><button class="btn btn-dark">Checkout</button></a>
-                      <button class="btn btn-secondary">Continue shopping</button>
                     </div>
                   </div>
                 </div>
@@ -320,7 +321,7 @@
             <label for="star1" title="text">1 star</label>
           </div>
           <div class="input-group">
-            <textarea class="form-control" aria-label="With textarea" form="modalReview" name="descriere"></textarea>
+            <textarea class="form-control" aria-label="With textarea" form="modalReview" name = "descriere"></textarea>
           </div>
         </div>
         <div class="modal-footer d-flex justify-content-center">
