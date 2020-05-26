@@ -6,7 +6,7 @@ const connection = require("../database/connection");
 module.exports.getPostsByUser = (userId, next) => {
 
   const request = new Request(
-    `SELECT *
+    `SELECT id, titlu, descriere, dataPostarii, utilizator, nume
      FROM [dbo].[Postari] 
      WHERE utilizator = '${userId}'`,
     (err, rowCount) => {
@@ -56,6 +56,37 @@ module.exports.post = (userId, title, desc, data, next) => {
 
   request.on('requestCompleted', () => { 
     next(undefined);
+  });
+
+  connection.execSql(request);
+}
+
+module.exports.getTopPosts = (next) => {
+    const request = new Request(
+    `SELECT TOP 10 p.id, titlu, descriere, dataPostarii, utilizator, nume
+     FROM [dbo].[Postari] as p
+     JOIN [dbo].[Utilizator] as u ON p.utilizator = u.id;`,
+    (err, rowCount) => {
+      if (err) {
+        next(createError(500, err.message));
+      } else {
+        console.log(`${rowCount} row(s) returned`);
+      }
+    }
+  );
+
+  var posts = [];
+  request.on("row", columns => {
+    var post = modelPost(columns);
+    posts.push(post)
+  });
+
+  request.on("err", err => {
+    next(createError(500, err.message));
+  });
+
+  request.on('requestCompleted', () => { 
+    next(undefined, posts);
   });
 
   connection.execSql(request);

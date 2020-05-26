@@ -104,6 +104,7 @@ var checkout=require('./routes/checkout');
 var blog=require('./routes/blog');
 var publish=require('./routes/publish');
 var publications=require('./routes/publications');
+var blogpost=require('./routes/blogpost');
 var app = express();
 
 // <SessionSnippet>
@@ -218,6 +219,7 @@ app.use('/blog',blog);
 app.use('/blog/add-new-post',blog);
 app.use('/publisher',publish);
 app.use('/publications',publications);
+app.use('/blogpost',blogpost);
 
 
 paypal.configure({
@@ -278,10 +280,6 @@ app.get('/success' , (req ,res ) => {
 app.get('/err' , (req , res) => {
     console.log(req.query); 
     res.render('err.hbs'); 
-})
-
-app.get('/blogpost',(req,res)=>{
-  res.render('blogposts.hbs',{});
 })
 
 

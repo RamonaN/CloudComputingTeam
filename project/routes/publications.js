@@ -1,6 +1,23 @@
 var express = require('express');
 var router = express.Router();
+
+publishController = require('../controllers/publishController');
+
 router.get('/', function(req, res, next) {
-    res.render('publications',{});
+  if (!req.isAuthenticated())
+    return res.redirect('/');
+
+  const userId = req.user.profile.id;
+
+  publishController.getPublicationsByUser(userId, (err, publicari) => {
+    if (err) 
+    {
+      return next(err);
+    }
+    
+    res.render('publications',{'publish': publicari});
   });
-  module.exports=router;
+
+});
+
+module.exports=router;
