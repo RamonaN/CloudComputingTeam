@@ -6,9 +6,10 @@ const connection = require("../database/connection");
 module.exports.getPostsByUser = (userId, next) => {
 
   const request = new Request(
-    `SELECT id, titlu, descriere, dataPostarii, utilizator, nume
-     FROM [dbo].[Postari] 
-     WHERE utilizator = '${userId}'`,
+    `SELECT TOP 10 p.id, titlu, descriere, dataPostarii, utilizator, nume
+     FROM [dbo].[Postari] as p
+     JOIN [dbo].[Utilizator] as u ON p.utilizator = u.id
+     WHERE p.utilizator = '${userId}'`,
     (err, rowCount) => {
       if (err) {
         next(createError(500, err.message));

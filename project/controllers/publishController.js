@@ -34,3 +34,29 @@ module.exports.getPublicationsByUser = (userId, next) => {
 
   connection.execSql(request);
 }
+
+module.exports.publish = (userId, email, title, category, phone, fileId, next) => {
+
+   const request = new Request(
+      `INSERT INTO [dbo].[Publicari] (utilizator, titlu, categorie, email, phone, src, status)
+       VALUES (${userId}, '${title}', '${category}', '${email}', '${phone}', '${fileId}', 'Processing');`,
+    (err, rowCount) => {
+      if (err) {
+        next(createError(500, err.message));
+      } else {
+        console.log(`${rowCount} row(s) returned`);
+      }
+    }
+  );
+
+  request.on("err", err => {
+    next(createError(500, err.message));
+  });
+
+  request.on('requestCompleted', () => { 
+    next(undefined);
+  });
+
+  connection.execSql(request);
+
+}

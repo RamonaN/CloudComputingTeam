@@ -1,5 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
+const fileUpload = require('express-fileupload');
+const cors = require('cors');
 const request=require('request');
 var bodyParser=require('body-parser');
 var path = require('path');
@@ -164,7 +166,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(fileUpload({
+    createParentPath: true
+}));
+
+app.use(cors());
 
 // Initialize passport
 app.use(passport.initialize());
@@ -281,8 +289,6 @@ app.get('/err' , (req , res) => {
     console.log(req.query); 
     res.render('err.hbs'); 
 })
-
-
 
 // helper functions 
 var createPay = ( payment ) => {

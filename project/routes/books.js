@@ -10,8 +10,7 @@ reviewController = require('../controllers/reviewController');
 
 router.get('/', async (req, res) => {
   if (!req.isAuthenticated()) {
-    // Redirect unauthenticated requests to home page
-    res.redirect('/')
+    return res.redirect('/')
   }
   else{
     let params = {

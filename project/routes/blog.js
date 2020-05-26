@@ -26,7 +26,7 @@ getDate = () => {
 
 router.get('/', function(req, res, next) {
   if (!req.isAuthenticated())
-    return res.redirect('/');
+    return res.redirect(300, '/');
 
   const userId = req.user.profile.id;
 
@@ -43,13 +43,13 @@ router.get('/', function(req, res, next) {
 
 router.get('/add-new-post', function(req, res, next) {
   if (!req.isAuthenticated())
-    return res.redirect('/');
+    return res.redirect(300, '/');
   res.render('add-new-post',{});
 });
 
 router.post('/add-new-post', function(req, res, next) {
   if (!req.isAuthenticated())
-    return res.redirect('/');
+    return res.redirect(300, '/');
 
   const userId = req.user.profile.id;
   const title = req.body.title;
@@ -58,8 +58,8 @@ router.post('/add-new-post', function(req, res, next) {
 
   postController.post(userId, title, desc, data, (err) => {
     if (err)
-      return next(err);
-    res.redirect('/blog/');
+        return next(err);
+      res.redirect('/blog/');
   });
 
 });

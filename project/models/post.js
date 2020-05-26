@@ -1,5 +1,4 @@
 module.exports.modelPost = (columns) => {
-  console.log(columns);
   var post = {};
   post.id = columns[0].value;
   post.titlu = columns[1].value;
@@ -7,6 +6,5 @@ module.exports.modelPost = (columns) => {
   post.dataPostarii = columns[3].value;
   post.utilizator = columns[4].value;
   post.nume = columns[5].value;
-  console.log(post);
   return post;
 }

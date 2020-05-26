@@ -20,4 +20,15 @@ router.get('/', function(req, res, next) {
 
 });
 
+router.get('/:id', function(req, res, next) {
+  if (!req.isAuthenticated())
+    return res.redirect('/');
+
+  const fileid = req.params.id;
+
+  const file = `./uploads/${fileid}`;
+  res.download(file);
+
+});
+
 module.exports=router;
