@@ -30,6 +30,7 @@
       href="https://use.fontawesome.com/releases/v5.12.1/css/all.css"
       crossorigin="anonymous">
     <link rel='stylesheet' href='/stylesheets/style.css' />
+
   </head>
 
   <body>
@@ -82,7 +83,25 @@
                   <a href="/auth/signout" class="dropdown-item">Sign Out</a>
                 </div>
               </li>
-              <li><a href="#" class="mt-2" id="cart"><i class="fa fa-shopping-cart"></i> Cart <span class="badge">0</span></a></li>
+              <li class="mini-cart"> 
+      <button class="btn mini-cart-button"><span class="fas fa-shopping-cart"></span></button>
+  
+    <div class="mini-cart-container">
+      <div class="mini-cart-items">
+        <ul>
+        </ul>
+        <div class="mini-cart-totals">
+          <div id="total-price">
+            <p>Total Price</p>
+            <span> $50.50 </span>
+          </div>
+          <div id="total-items">
+            <p>Total Items</p>
+            <span> 10 </span>
+          </div>
+        </div>
+      </div>
+    </div></li>
             {{else}}
               <li class="nav-item">
                 <a href="/auth/signin" class="nav-link">Sign In</a>
@@ -111,7 +130,7 @@
     </div>
   </div>
 </div>
-    <main role="main" class="container-fluid">
+    <main role="main" class="container-fluid mt-5">
       {{#each error}}
         <div class="alert alert-danger" role="alert">
           <p class="mb-3">{{ this.message }}</p>
@@ -134,6 +153,64 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
           integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
           crossorigin="anonymous"></script>
+  <script>
+    function commaSeparateNumber(val){
+  while (/(\d+)(\d{3})/.test(val.toString())){
+    val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
+  }
+  return val;
+}
+$('document').ready(function(){ 
+	 $('.mini-cart-button').click(function(){
+     $('.mini-cart-container').toggleClass('mini-cart-open');
+   })
+   
+   $('.plus').on('click', function(e) {
+    var val = parseInt($(this).prev('input').val());
+    $(this).prev('input').val(val + 1).change();
+  });
+
+  $('.minus').on('click', function(e) {
+    var val = parseInt($(this).next('input').val());
+    if (val !== 0) {
+      $(this).next('input').val(val - 1).change();
+    }
+  });
+  
+  $('.add-to-cart-button').on('click', function(e) {
+    var val = $(this).attr("rel");
+    var price = $(this).attr('sel');
+    var qty = $("input#text_"+val).val();
+    var productName =$(this).attr('product');
+    if($(".mini-cart-items ul li#"+val).length)
+    {
+      var new_val=parseFloat($("span#price_"+val).text())+(parseFloat(qty)*parseFloat(price));
+      $("span#price_"+val).text(new_val.toFixed(2));
+      
+      var new_qty_val=parseInt($("span#qty_"+val).text())+parseInt(qty);
+      $("span#qty_"+val).text(new_qty_val);
+    }else{ 
+        $('.mini-cart-items ul').append('<li id="'+val+'">'+'<h3>'+productName+'<br/>'+'<span class="item-prices" id="price_'+val+'">'+price+'<span>'+'</h3>'+'<span class="item-quantities" id="qty_'+val+'">'+qty+'</span>'+'</li>');
+    };
+
+    var totalPrice = 0.0;
+    $(".item-prices").each(function()
+    {
+        totalPrice += parseFloat($(this).text());
+    });
+    $('div#total-price > span').text(commaSeparateNumber(totalPrice.toFixed(2)));
+    
+    var totalQty = 0;
+    $(".item-quantities").each(function(){
+        totalQty += parseFloat($(this).text());
+    });
+    $('div#total-items > span').text(totalQty.toFixed(0));
+    
+    $('.succes-message').show(0).delay(1000).hide(0);
+  });
+
+});
+  </script>
   </body>
 </html>
 <!-- </LayoutSnippet> -->
