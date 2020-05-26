@@ -68,33 +68,4 @@
     {{/each}}
   </div>
 </body>
-<script>
- const url="https://ussouthcentral.services.azureml.net/workspaces/ce6a4cb74bc442ac842a9fe757b34621/services/ca020d3c09674aadb0dbb90d3b4672c8/execute?api-version=2.0&details=true"
-
- let data =  {
-        "GlobalParameters": {
-        "user_id": "3",
-        "filter": "titlu,autor,an,editor,categorie ,,2001,,"}
-}
-function getRecco(){
-const url="https://ussouthcentral.services.azureml.net/workspaces/ce6a4cb74bc442ac842a9fe757b34621/services/ca020d3c09674aadb0dbb90d3b4672c8/execute?api-version=2.0&details=true"
-fetch(url, {
-  method: 'POST', // or 'PUT'
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization':'Bearer oPzykrHDC8+ATDy+RSfGvHwaJFeCQdA+6kQfdGSEb0G9EWr0MELZ/V4BSbo12eB6TAOJvC6KhSxHb6GSo+5lpw=='
-  },
-  body: JSON.stringify(data),
-})
-.then(response => response.json())
-.then(data => {
-  console.log('Success:', data);
-})
-.catch((error) => {
-  console.error('Error:', error);
-})
-}
-
-
-  </script>
 </html>

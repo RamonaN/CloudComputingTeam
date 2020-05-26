@@ -241,8 +241,8 @@ app.get('/buy' , ( req , res ) => {
 		"payment_method": "paypal"
 	},
 	"redirect_urls": {
-		"return_url": "http://localhost:3000/success",
-		"cancel_url": "http://localhost:3000/err"
+		"return_url": "https://core-b00k.azurewebsites.net/success",
+		"cancel_url": "https://core-b00k.azurewebsites.net/err"
 	},
 	"transactions": [{
 		"amount": {
