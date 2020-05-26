@@ -46,7 +46,7 @@ router.get('/:bookId', (req, res, next) => {
       let sum = 0;
       for (i=0; i<size; i++)
         sum += parseInt(ratings[i].scor);
-      book[0].rating = (sum / size) / 2;
+      book[0].rating = parseFloat((sum / size) / 2).toFixed(2);
       book[0].revno = size;
       reviewController.getReviewsByBook(bookId, (err, reviews) => {
         if (err)
@@ -97,17 +97,5 @@ router.post('/:bookId/review', (req, res, next) => {
     })
   })
 });
-
-router.get('/:bookId/ratings', (req, res, next) => {
-  const bookId = req.params.bookId;
-  ratingController.getRatingsByBook(bookId, (err, ratings) => {
-    if (err) 
-    {
-      return next(err);
-    }
-    res.json(ratings).end();
-  })
-});
-
 
 module.exports = router;

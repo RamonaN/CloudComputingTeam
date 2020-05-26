@@ -70,15 +70,15 @@ module.exports.getReviewsByBook = (bookId, next) => {
 
 module.exports.review = (bookId, userId, dataPostarii, descriere, next) => {
 
-  console.log(`INSERT INTO [dbo].[Review] (utilizator, isbn, descriere, dataPostarii)
-       VALUES (${userId}, '${bookId}', '${descriere}', '${dataPostarii}');`);
-
   const request = new Request(
       `INSERT INTO [dbo].[Review] (utilizator, isbn, descriere, dataPostarii)
        VALUES (${userId}, '${bookId}', '${descriere}', '${dataPostarii}');`,
     (err, rowCount) => {
       if (err) {
-        next(createError(500, err.message));
+        if (!err.message.includes("PRIMARY"))
+        {
+          next(createError(500, err.message));
+        }
       } else {
         console.log(`${rowCount} row(s) returned`);
       }
@@ -86,6 +86,10 @@ module.exports.review = (bookId, userId, dataPostarii, descriere, next) => {
   );
 
   request.on("err", err => {
+    if (err.message.includes("PRIMARY"))
+    {
+      return next(undefined);
+    }
     next(createError(500, err.message));
   });
 

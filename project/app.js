@@ -187,6 +187,7 @@ app.use(function(req, res, next) {
         next();
       })
     }
+    
     userController.exists(name, success, () => {
       userController.register(req.user.profile.displayName);
       success();

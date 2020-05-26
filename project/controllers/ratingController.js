@@ -74,7 +74,10 @@ module.exports.rate = (bookId, userId, rate, next) => {
        VALUES (${userId}, '${bookId}', ${rate});`,
     (err, rowCount) => {
       if (err) {
-        next(createError(500, err.message));
+        if (!err.message.includes("PRIMARY"))
+        {
+          next(createError(500, err.message));
+        }
       } else {
         console.log(`${rowCount} row(s) returned`);
       }
@@ -82,6 +85,10 @@ module.exports.rate = (bookId, userId, rate, next) => {
   );
 
   request.on("err", err => {
+    if (err.message.includes("PRIMARY"))
+    {
+      return next(undefined);
+    }
     next(createError(500, err.message));
   });
 

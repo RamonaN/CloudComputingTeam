@@ -38,7 +38,7 @@ module.exports.getBook = (bookId, next) => {
 module.exports.getBooks = (next) => {
 
   const request = new Request(
-    `SELECT *
+    `SELECT TOP 50 *
      FROM [dbo].[Carte]`,
     (err, rowCount) => {
       if (err) {
