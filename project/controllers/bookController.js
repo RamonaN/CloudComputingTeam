@@ -4,16 +4,17 @@ const { modelBook } = require("../models/books")
 const connection = require("../database/connection");
 
 module.exports.getBook = (bookId, next) => {
+  let ok = true;
 
   const request = new Request(
     `SELECT *
      FROM [dbo].[Carte] 
      WHERE isbn like '${bookId}'`,
     (err, rowCount) => {
-      if (err) {
-           return  next(createError(500, err.message));
-      } else {
-        console.log(`${rowCount} row(s) returned`);
+      if (err && ok)
+      {
+        ok = false;
+        return next(createError(500, err.message));
       }
     }
   );
@@ -25,26 +26,33 @@ module.exports.getBook = (bookId, next) => {
   });
 
   request.on("err", err => {
-    next(createError(500, err.message));
+    if (ok)
+    {
+      ok = false;
+      return next(createError(500, err.message));
+    }
   });
 
   request.on('requestCompleted', () => { 
-    next(undefined, books);
+    if (ok)
+    {
+      return next(undefined, books);
+    }
   });
 
   connection.execSql(request);
 }
 
 module.exports.getBooks = (next) => {
+  let ok = true;
 
   const request = new Request(
     `SELECT TOP 50 *
      FROM [dbo].[Carte]`,
     (err, rowCount) => {
-      if (err) {
-         next(createError(500, err.message));
-      } else {
-        console.log(`${rowCount} row(s) returned`);
+      if (err && ok) {
+        ok = false;
+        return next(createError(500, err.message));
       }
     }
   );
@@ -56,11 +64,18 @@ module.exports.getBooks = (next) => {
   });
 
   request.on("err", err => {
-    next(createError(500, err.message));
+    if (ok)
+    {
+      ok = false;
+      next(createError(500, err.message));
+    }
   });
 
   request.on('requestCompleted', (rowCount,more,rows) => { 
-    next(undefined, books);
+    if (ok)
+    {
+      next(undefined, books);
+    }
   });
 
   connection.execSql(request);

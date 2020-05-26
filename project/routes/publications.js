@@ -11,9 +11,7 @@ router.get('/', function(req, res, next) {
 
   publishController.getPublicationsByUser(userId, (err, publicari) => {
     if (err) 
-    {
       return next(err);
-    }
     
     res.render('publications',{'publish': publicari});
   });
@@ -27,7 +25,7 @@ router.get('/:id', function(req, res, next) {
   const fileid = req.params.id;
 
   const file = `./uploads/${fileid}`;
-  res.download(file);
+  res.download(file).end();
 
 });
 

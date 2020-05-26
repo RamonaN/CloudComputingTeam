@@ -97,7 +97,6 @@ passport.use(new OIDCStrategy(
 ));
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth');
 var books=require('./routes/books');
 var graph = require('./graph');
@@ -218,7 +217,6 @@ app.use(function(req, res, next) {
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 
-app.use('/users', usersRouter);
 app.use('/books', books);
 app.use('/book',books);
 app.use('/reccomender',adviser);

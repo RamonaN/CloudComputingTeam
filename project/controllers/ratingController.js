@@ -4,16 +4,16 @@ const { modelRating } = require("../models/ratings")
 const connection = require("../database/connection");
 
 module.exports.getRatingsByUser = (userId, next) => {
+  let ok = true;
 
   const request = new Request(
     `SELECT *
      FROM [dbo].[Scor] 
      WHERE utilizator = '${userId}'`,
     (err, rowCount) => {
-      if (err) {
-        next(createError(500, err.message));
-      } else {
-        console.log(`${rowCount} row(s) returned`);
+      if (err && ok) {
+        ok = false;
+        return next(createError(500, err.message));
       }
     }
   );
@@ -25,27 +25,34 @@ module.exports.getRatingsByUser = (userId, next) => {
   });
 
   request.on("err", err => {
-    next(createError(500, err.message));
+    if (ok)
+    {
+      ok = false;
+      return next(createError(500, err.message));
+    }
   });
 
   request.on('requestCompleted', () => { 
-    next(undefined, ratings);
+    if (ok)
+    {
+      return next(undefined, ratings);
+    }
   });
 
   connection.execSql(request);
 }
 
 module.exports.getRatingsByBook = (bookId, next) => {
+  let ok = true;
 
   const request = new Request(
     `SELECT *
      FROM [dbo].[Scor] 
      WHERE isbn = '${bookId}'`,
     (err, rowCount) => {
-      if (err) {
-        next(createError(500, err.message));
-      } else {
-        console.log(`${rowCount} row(s) returned`);
+      if (err && ok) {
+        ok = false;
+        return next(createError(500, err.message));
       }
     }
   );
@@ -57,43 +64,51 @@ module.exports.getRatingsByBook = (bookId, next) => {
   });
 
   request.on("err", err => {
-    next(createError(500, err.message));
+    if (ok)
+    {
+      ok = false;
+      return next(createError(500, err.message));
+    }
+    
   });
 
   request.on('requestCompleted', () => { 
-    next(undefined, ratings);
+    if (ok)
+    {
+      next(undefined, ratings);
+    }
   });
 
   connection.execSql(request);
 }
 
 module.exports.rate = (bookId, userId, rate, next) => {
+  let ok = true;
 
   const request = new Request(
       `INSERT INTO [dbo].[Scor] (utilizator, isbn, rating)
        VALUES (${userId}, '${bookId}', ${rate});`,
     (err, rowCount) => {
-      if (err) {
-        if (!err.message.includes("PRIMARY"))
-        {
-          next(createError(500, err.message));
-        }
-      } else {
-        console.log(`${rowCount} row(s) returned`);
+      if (err && !err.message.includes("PRIMARY") && ok) {
+        ok = false;
+        return next(createError(500, err.message));
       }
     }
   );
 
   request.on("err", err => {
-    if (err.message.includes("PRIMARY"))
+    if (!err.message.includes("PRIMARY") && ok)
     {
-      return next(undefined);
+      ok = false;
+      return next(createError(500, err.message));
     }
-    next(createError(500, err.message));
   });
 
   request.on('requestCompleted', () => { 
-    next(undefined);
+    if (ok)
+    {
+      return next(undefined);
+    }
   });
 
   connection.execSql(request);

@@ -1,44 +1,68 @@
-const books = require("../database/book.js");
 const createError = require('http-errors');
+const { Request } = require("tedious");
+const { modelBook } = require("../models/books")
+const connection = require("../database/connection");
 
 module.exports.getBook = (bookId, next) => {
-  books.doc(bookId).get()
-  .then(book => {
-    if (!book.exists) {
-      next(createError(404 , "Book does not exist"));
-    } else {
-      next(undefined, book.data());
+
+  const request = new Request(
+    `SELECT *
+     FROM [dbo].[Carte] 
+     WHERE isbn like '${bookId}'`,
+    (err, rowCount) => {
+      if (err) {
+           return  next(createError(500, err.message));
+      } else {
+        console.log(`${rowCount} row(s) returned`);
+      }
     }
-  })
-  .catch(err => {
-    next(createError(500, err));
+  );
+
+  var books = []
+  request.on("row", columns => {
+    var book = modelBook(columns);
+    books.push(book)
   });
+
+  request.on("err", err => {
+    next(createError(500, err.message));
+  });
+
+  request.on('requestCompleted', () => { 
+    next(undefined, books);
+  });
+
+  connection.execSql(request);
 }
 
 module.exports.getBooks = (next) => {
-  books.get()
-  .then((snapshot) => {
-    var finalBooks = [];
-    snapshot.forEach((book) => {
-      finalBooks.push(book.data());
-    })
-    next(undefined, finalBooks);
-  })
-  .catch(err => {
-    next(createError(500, err));
-  });
-}
 
-module.exports.getRatingsByBook = (next) => {
-  books.get()
-  .then((snapshot) => {
-    var finalBooks = [];
-    snapshot.forEach((book) => {
-      finalBooks.push(book.data());
-    })
-    next(undefined, finalBooks);
-  })
-  .catch(err => {
-    next(createError(500, err));
+  const request = new Request(
+    `SELECT TOP 50 *
+     FROM [dbo].[Carte]`,
+    (err, rowCount) => {
+      if (err) {
+         next(createError(500, err.message));
+      } else {
+        console.log(`${rowCount} row(s) returned`);
+      }
+    }
+  );
+
+  var books = []
+  request.on("row", columns => {
+    var book = modelBook(columns);
+    books.push(book)
   });
+
+  request.on("err", err => {
+    next(createError(500, err.message));
+  });
+
+  request.on('requestCompleted', (rowCount,more,rows) => { 
+    next(undefined, books);
+  });
+
+  connection.execSql(request);
+
 }

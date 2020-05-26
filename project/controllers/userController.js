@@ -4,16 +4,16 @@ const { modelUser } = require("../models/users")
 const connection = require("../database/connection");
 
 module.exports.getUser = (userId, next) => {
+  let ok = true;
 
   const request = new Request(
     `SELECT *
      FROM [dbo].[Utilizator] 
      WHERE id = '${userId}'`,
     (err, rowCount) => {
-      if (err) {
-        next(createError(500, err.message));
-      } else {
-        console.log(`${rowCount} row(s) returned`);
+      if (err && ok) {
+        ok = false;
+        return next(createError(500, err.message));
       }
     }
   );
@@ -25,26 +25,34 @@ module.exports.getUser = (userId, next) => {
   });
 
   request.on("err", err => {
-    next(createError(500, err.message));
+    if (ok)
+    {
+      ok = false;
+      return next(createError(500, err.message));
+    }
   });
 
   request.on('requestCompleted', () => { 
-    next(undefined, users);
+    if (ok)
+    {
+      next(undefined, users);
+    }
   });
 
   connection.execSql(request);
 }
 
 exists = (userName, success, failure) => {
+  let ok = true;
+
   const request = new Request(
     `SELECT 1
      FROM [dbo].[Utilizator] 
      WHERE nume = '${userName}'`,
     (err, rowCount) => {
-      if (err) {
-        success(createError(500, err.message));
-      } else {
-        console.log(`${rowCount} row(s) returned`);
+      if (err && ok) {
+        ok = false;
+        return success(createError(500, err.message));
       }
     }
   );
@@ -55,14 +63,21 @@ exists = (userName, success, failure) => {
   });
 
   request.on("err", err => {
-    console.log(err.message);
+    if (ok)
+    {
+      ok = false;
+      return success(createError(500, err.message));
+    }
   });
 
   request.on('requestCompleted', () => { 
-    if (exists)
-      success();
-    else
-      failure();
+    if (ok)
+    {
+      if (exists)
+        success();
+      else
+        failure();
+    }
   });
 
   connection.execSql(request);
@@ -78,8 +93,6 @@ module.exports.register = (userName) => {
       (err, rowCount) => {
         if (err) {
           console.log(err.message);
-        } else {
-          console.log(`${rowCount} row(s) returned`);
         }
       }
     );
@@ -93,21 +106,26 @@ module.exports.register = (userName) => {
 }
 
 module.exports.getId = (userName, callback) => {
+  let ok = true;
+
   const request = new Request(
     `SELECT id
      FROM [dbo].[Utilizator]
      WHERE nume = '${userName}'`,
     (err, rowCount) => {
-      if (err) {
-        callback(err, undefined);
-      } else {
-        console.log(`${rowCount} row(s) returned`);
+      if (err && ok) {
+        ok = false;
+        callback(createError(500, err.message));
       }
     }
   );
 
   request.on("err", err => {
-    console.log(err.message);
+    if (ok)
+    {
+      ok = false;
+      callback(createError(500, err.message));
+    }
   });
 
   var id = -1;
@@ -116,7 +134,10 @@ module.exports.getId = (userName, callback) => {
   });
 
   request.on('requestCompleted', () => { 
-    callback(undefined, id);
+    if (ok)
+    {
+      callback(undefined, id);
+    }
   });
 
   connection.execSql(request);

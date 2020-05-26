@@ -2,13 +2,15 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
-    res.render('publish-book',{});
+  if (!req.isAuthenticated())
+    return res.redirect('/');
+
+  res.render('publish-book',{});
 });
 
 router.post('/', function(req, res, next) {
-  if (!req.isAuthenticated()) {
+  if (!req.isAuthenticated())
     return res.redirect('/')
-  }
 
   let file = req.files.file;
   file.mv('./uploads/' + file.md5);
