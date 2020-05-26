@@ -11,7 +11,7 @@ module.exports.getBook = (bookId, next) => {
      WHERE isbn like '${bookId}'`,
     (err, rowCount) => {
       if (err) {
-        next(createError(500, err.message));
+           return  next(createError(500, err.message));
       } else {
         console.log(`${rowCount} row(s) returned`);
       }
@@ -42,7 +42,7 @@ module.exports.getBooks = (next) => {
      FROM [dbo].[Carte]`,
     (err, rowCount) => {
       if (err) {
-        next(createError(500, err.message));
+         next(createError(500, err.message));
       } else {
         console.log(`${rowCount} row(s) returned`);
       }
@@ -59,7 +59,7 @@ module.exports.getBooks = (next) => {
     next(createError(500, err.message));
   });
 
-  request.on('requestCompleted', () => { 
+  request.on('requestCompleted', (rowCount,more,rows) => { 
     next(undefined, books);
   });
 

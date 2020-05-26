@@ -1,9 +1,12 @@
 var express = require('express');
 var router = express.Router();
+var tokens = require('../tokens.js');
+var graph = require('../graph.js');
 
 bookController = require('../controllers/bookController');
 ratingController = require('../controllers/ratingController');
 reviewController = require('../controllers/reviewController');
+
 
 router.get('/', async (req, res) => {
   if (!req.isAuthenticated()) {
@@ -23,11 +26,12 @@ router.get('/', async (req, res) => {
           debug: JSON.stringify(err)
         });
       }
-  
+  console.log("AM ajuns pana aici");
   bookController.getBooks((err, books) => {
+    console.log("am intrat in controler")
     if (err) 
     {
-      return next(err);
+      next(err);
     }
     params.books=books;
     res.render("books",params);

@@ -1,13 +1,17 @@
 var createError = require('http-errors');
 var express = require('express');
+const request=require('request');
+var bodyParser=require('body-parser');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
 var flash = require('connect-flash');
+var paypal = require('paypal-rest-sdk');
 require('dotenv').config();
 var passport = require('passport');
 var OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
+const stripe = require('stripe')('sk_test_gOkdvWN7FyPKA9tnzpDdF8Er00Sbqvspay');
 
 userController = require('./controllers/userController');
 
@@ -155,9 +159,11 @@ hbs.registerHelper('times', function(n, block) {
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Initialize passport
 app.use(passport.initialize());
@@ -211,6 +217,87 @@ app.use('/blog',blog);
 app.use('/blog/add-new-post',blog);
 app.use('/publisher',publish);
 app.use('/publications',publications);
+
+
+paypal.configure({
+  'mode': 'sandbox', //sandbox or live 
+  'client_id': 'AXO6WVoJMcA0a5Tb1tAEnRGHm3oNxazNrTKN7dAWU1v8Fjr8ZRUYFfhkwlnQPAfFUD5fwEToAxp44JMi', // please provide your client id here 
+  'client_secret': 'ECGBm-Z3t4XTr2w5YpwZUYfGv8uZj14_rspAOF1iRVXpTsOAIp6RsKpFtajste9XUPjHGAqprn6c8WXG' // provide your client secret here 
+});
+app.get('/buy' , ( req , res ) => {
+	// create payment object 
+    var payment = {
+            "intent": "authorize",
+	"payer": {
+		"payment_method": "paypal"
+	},
+	"redirect_urls": {
+		"return_url": "http://localhost:3000/success",
+		"cancel_url": "http://localhost:3000/err"
+	},
+	"transactions": [{
+		"amount": {
+			"total": 10.00,
+			"currency": "USD"
+		},
+		"description": " premium account "
+	}]
+    }
+	
+	
+	// call the create Pay method 
+    createPay( payment ) 
+        .then( ( transaction ) => {
+            var id = transaction.id; 
+            var links = transaction.links;
+            var counter = links.length; 
+            while( counter -- ) {
+                if ( links[counter].method == 'REDIRECT') {
+					// redirect to paypal where user approves the transaction 
+                    return res.redirect( links[counter].href )
+                }
+            }
+        })
+        .catch( ( err ) => { 
+            console.log( err ); 
+            res.render('err.hbs');
+        });
+}); 
+
+
+// success page 
+app.get('/success' , (req ,res ) => {
+    if(req.query.token){
+    //ADAUGA USER CA A PLATIT 
+    }
+    res.render('success.hbs'); 
+})
+
+// error page 
+app.get('/err' , (req , res) => {
+    console.log(req.query); 
+    res.render('err.hbs'); 
+})
+
+app.get('/blogpost',(req,res)=>{
+  res.render('blogposts.hbs',{});
+})
+
+
+
+// helper functions 
+var createPay = ( payment ) => {
+    return new Promise( ( resolve , reject ) => {
+        paypal.payment.create( payment , function( err , payment ) {
+         if ( err ) {
+             reject(err); 
+         }
+        else {
+            resolve(payment); 
+        }
+        }); 
+    });
+}			
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
