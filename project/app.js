@@ -1,5 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
+const fileUpload = require('express-fileupload');
+const cors = require('cors');
 const request=require('request');
 var bodyParser=require('body-parser');
 var path = require('path');
@@ -95,7 +97,6 @@ passport.use(new OIDCStrategy(
 ));
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth');
 var books=require('./routes/books');
 var graph = require('./graph');
@@ -104,6 +105,7 @@ var checkout=require('./routes/checkout');
 var blog=require('./routes/blog');
 var publish=require('./routes/publish');
 var publications=require('./routes/publications');
+var blogpost=require('./routes/blogpost');
 var app = express();
 
 // <SessionSnippet>
@@ -163,7 +165,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(fileUpload({
+    createParentPath: true
+}));
+
+app.use(cors());
 
 // Initialize passport
 app.use(passport.initialize());
@@ -209,7 +217,6 @@ app.use(function(req, res, next) {
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 
-app.use('/users', usersRouter);
 app.use('/books', books);
 app.use('/book',books);
 app.use('/reccomender',adviser);
@@ -218,6 +225,7 @@ app.use('/blog',blog);
 app.use('/blog/add-new-post',blog);
 app.use('/publisher',publish);
 app.use('/publications',publications);
+app.use('/blogpost',blogpost);
 
 
 paypal.configure({
@@ -279,12 +287,6 @@ app.get('/err' , (req , res) => {
     console.log(req.query); 
     res.render('err.hbs'); 
 })
-
-app.get('/blogpost',(req,res)=>{
-  res.render('blogposts.hbs',{});
-})
-
-
 
 // helper functions 
 var createPay = ( payment ) => {

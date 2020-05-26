@@ -4,16 +4,16 @@ const { modelReview } = require("../models/review")
 const connection = require("../database/connection");
 
 module.exports.getReviewsByUser = (userId, next) => {
+  let ok = true;
 
   const request = new Request(
     `SELECT *
      FROM [dbo].[Review] 
      WHERE utilizator = '${userId}'`,
     (err, rowCount) => {
-      if (err) {
-        next(createError(500, err.message));
-      } else {
-        console.log(`${rowCount} row(s) returned`);
+      if (err && ok) {
+        ok = false;
+        return next(createError(500, err.message));
       }
     }
   );
@@ -25,17 +25,25 @@ module.exports.getReviewsByUser = (userId, next) => {
   });
 
   request.on("err", err => {
-    next(createError(500, err.message));
+    if (ok)
+    {
+      ok = false;
+      return next(createError(500, err.message));
+    }
   });
 
   request.on('requestCompleted', () => { 
-    next(undefined, reviews);
+    if (ok)
+    {
+      return next(undefined, reviews);
+    }
   });
 
   connection.execSql(request);
 }
 
 module.exports.getReviewsByBook = (bookId, next) => {
+  let ok = true;
 
   const request = new Request(
    `SELECT utilizator, isbn, descriere, dataPostarii, nume
@@ -43,10 +51,9 @@ module.exports.getReviewsByBook = (bookId, next) => {
     JOIN [dbo].[Utilizator] ON [dbo].[Review].utilizator = [dbo].[Utilizator].id
     WHERE isbn = '${bookId}';`,
     (err, rowCount) => {
-      if (err) {
-        next(createError(500, err.message));
-      } else {
-        console.log(`${rowCount} row(s) returned`);
+      if (err && ok) {
+        ok = false;
+        return next(createError(500, err.message));
       }
     }
   );
@@ -58,43 +65,50 @@ module.exports.getReviewsByBook = (bookId, next) => {
   });
 
   request.on("err", err => {
-    next(createError(500, err.message));
+    if (ok)
+    {
+      ok = false;
+      return next(createError(500, err.message));
+    }
   });
 
   request.on('requestCompleted', () => { 
-    next(undefined, reviews);
+    if (ok)
+    {
+      return next(undefined, reviews);
+    }
   });
 
   connection.execSql(request);
 }
 
 module.exports.review = (bookId, userId, dataPostarii, descriere, next) => {
+  let ok = true;
 
   const request = new Request(
       `INSERT INTO [dbo].[Review] (utilizator, isbn, descriere, dataPostarii)
        VALUES (${userId}, '${bookId}', '${descriere}', '${dataPostarii}');`,
     (err, rowCount) => {
-      if (err) {
-        if (!err.message.includes("PRIMARY"))
-        {
-          next(createError(500, err.message));
-        }
-      } else {
-        console.log(`${rowCount} row(s) returned`);
+      if (err && !err.message.includes("PRIMARY") && ok) {
+        ok = false;
+        return next(createError(500, err.message));
       }
     }
   );
 
   request.on("err", err => {
-    if (err.message.includes("PRIMARY"))
+    if (!err.message.includes("PRIMARY") && ok)
     {
-      return next(undefined);
+      ok = false;
+      return next(createError(500, err.message));
     }
-    next(createError(500, err.message));
   });
 
-  request.on('requestCompleted', () => { 
-    next(undefined);
+  request.on('requestCompleted', () => {
+    if (ok)
+    {
+      next(undefined);
+    } 
   });
 
   connection.execSql(request);

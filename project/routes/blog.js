@@ -20,21 +20,18 @@ getDate = () => {
     hours -= 12;
   }
   const data = pad(d.getMonth()+1) + "/" + pad(d.getDate()) + "/" + d.getFullYear() + " " + pad(hours)  + ":" + pad(d.getMinutes()) + " " + ampm;
-  console.log(data);
   return data;
 }
 
 router.get('/', function(req, res, next) {
   if (!req.isAuthenticated())
-    return res.redirect('/');
+    return res.redirect(300, '/');
 
   const userId = req.user.profile.id;
 
   postController.getPostsByUser(userId, (err, posts) => {
     if (err) 
-    {
       return next(err);
-    }
     
     res.render('blog', {'posts': posts});
   })
@@ -43,13 +40,14 @@ router.get('/', function(req, res, next) {
 
 router.get('/add-new-post', function(req, res, next) {
   if (!req.isAuthenticated())
-    return res.redirect('/');
+    return res.redirect(300, '/');
+
   res.render('add-new-post',{});
 });
 
 router.post('/add-new-post', function(req, res, next) {
   if (!req.isAuthenticated())
-    return res.redirect('/');
+    return res.redirect(300, '/');
 
   const userId = req.user.profile.id;
   const title = req.body.title;

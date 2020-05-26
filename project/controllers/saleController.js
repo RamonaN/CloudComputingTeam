@@ -4,16 +4,16 @@ const { modelSale } = require("../models/sale")
 const connection = require("../database/connection");
 
 module.exports.getSale = (userId, bookId, next) => {
+  let ok = true;
 
   const request = new Request(
     `SELECT *
      FROM [dbo].[Reduceri] 
      WHERE utilizator = '${userId}' and isbn = '${bookId}'`,
     (err, rowCount) => {
-      if (err) {
-        next(createError(500, err.message));
-      } else {
-        console.log(`${rowCount} row(s) returned`);
+      if (err && ok) {
+        ok = false;
+        return next(createError(500, err.message));
       }
     }
   );
@@ -25,11 +25,18 @@ module.exports.getSale = (userId, bookId, next) => {
   });
 
   request.on("err", err => {
-    next(createError(500, err.message));
+    if (ok)
+    {
+      ok = false;
+      next(createError(500, err.message));
+    }
   });
 
   request.on('requestCompleted', () => { 
-    next(undefined, sales);
+    if (ok)
+    {
+      return next(undefined, sales);
+    }
   });
 
   connection.execSql(request);
