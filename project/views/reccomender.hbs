@@ -66,6 +66,10 @@
     {{#each isbn}}
     <a href="/book/{{isbn}}"><button class="btn btn-warning"> Go to book with isbn : {{isbn}}</button></a>
     {{/each}}
+    {{#if error}}
+      <button class="btn btn-warning">{{error}}</button>
+
+    {{/if}}
   </div>
 </body>
 </html>

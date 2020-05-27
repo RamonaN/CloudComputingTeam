@@ -52,9 +52,8 @@ router.post("/",(req,res,next)=>{
           res.render("reccomender",{"isbn":recomandari});
         }
         else{
-          var object={"isbn":"No matches found"}
-          recomandari.push(object);
-          res.render("reccomender",{"isbn":recomandari})
+         
+          res.render("reccomender",{"error":"No predictions available"})
         }
       
       

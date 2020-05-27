@@ -69,10 +69,11 @@
                <li class="nav-item" data-turbolinks="false">
                 <a href="/reccomender" class="nav-link active">Adviser</a>
               </li>
+              {{#if user.premium}}
                <li class="nav-item" data-turbolinks="false">
                 <a href="/blog" class="nav-link active">Blog</a>
               </li>
-
+            {{/if}}
             {{/if}}
           </ul>
           <ul class="navbar-nav justify-content-end">
@@ -80,7 +81,7 @@
             {{#if user}}
             
             <li class="nav-item">
-                  <a href="" class="nav-link" style="border: 1px solid white;"data-toggle="modal" data-target="#upgradeModal">Upgrade</a>
+                  <a href="" class="nav-link" style="border: 1px solid white;"data-toggle="modal"  data-target="#upgradeModal">{{#if user.premium}}Upgraded  {{else}}Upgrade{{/if}}</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="/auth/signout" role="button" aria-haspopup="true"
@@ -178,25 +179,46 @@
   }
   return val;
 }
+  let products=[];
 $('document').ready(function(){ 
+   var totalPrice = 0.0;
+(function () {
+
+  var lastclear = localStorage.getItem('lastclear'),
+      time_now  = (new Date()).getTime();
+
+  // .getTime() returns milliseconds so 1000 * 60 * 60 * 24 = 24 days
+  if ((time_now - lastclear) > 1000*100 *18) {
+
+    localStorage.clear();
+
+    localStorage.setItem('lastclear', time_now);
+  }
+
+})();
+ if(localStorage.getItem('products')){
+   products=JSON.parse(localStorage.getItem('products'))
+   for(let i=0;i<products.length;i++){
+     totalPrice+=parseFloat(products[i].price);
+    $('.mini-cart-items ul').append('<li id="'+products[i].val+'">'+'<h3>'+products[i].productName+'<br/>'+'<span class="item-prices" id="price_'+products[i].val+'">'+products[i].price+'</span>'+'</h3>'+'</li>');
+ }
+  $('div#total-price > span').text(commaSeparateNumber(totalPrice.toFixed(2)));
+
+ }
 	 $('.mini-cart-button').click(function(){
      $('.mini-cart-container').toggleClass('mini-cart-open');
    })
-  
-  
+
   $('.add-to-cart-button').on('click', function(e) {
    
     var val = $(this).attr("rel");
     var price = $(this).attr('sel');
     //var qty = $("input#text_"+val).val();
     var productName =$(this).attr('product');
-    
-    localStorage.setItem("val",val);
-    localStorage.setItem("productName",productName);
-    localStorage.setItem('price',price);
-    
-   
-   
+    totalPrice=0.0;
+    products.push({'val':val, "productName":productName,"price":price});
+    console.log(products)
+    localStorage.setItem('products',JSON.stringify(products));   
     if($(".mini-cart-items ul li#"+val).length)
     {
       var new_val=parseFloat($("span#price_"+val).text())+parseFloat(price);
@@ -209,7 +231,7 @@ $('document').ready(function(){
         $('.mini-cart-items ul').append('<li id="'+val+'">'+'<h3>'+productName+'<br/>'+'<span class="item-prices" id="price_'+val+'">'+price+'</span>'+'</h3>'+'</li>');
     };
 
-    var totalPrice = 0.0;
+  
     $(".item-prices").each(function()
     {
         totalPrice += parseFloat($(this).text());

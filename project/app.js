@@ -276,9 +276,14 @@ app.get('/buy' , ( req , res ) => {
 
 // success page 
 app.get('/success' , (req ,res ) => {
+  if(req.user){
     if(req.query.token){
-    //ADAUGA USER CA A PLATIT 
-    }
+      //ADAUGA USER CA A PLATIT 
+      console.log(req.query.token)
+      req.user.profile.premium=1;
+      }
+  }
+   
     res.render('success.hbs'); 
 })
 
